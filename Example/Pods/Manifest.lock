@@ -1,0 +1,28 @@
+PODS:
+  - ErosPluginGS (0.0.1):
+    - WeexPluginLoader
+    - WeexSDK
+  - WeexPluginLoader (0.0.1.9.1):
+    - WeexSDK
+  - WeexSDK (0.20.1)
+
+DEPENDENCIES:
+  - ErosPluginGS (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - WeexPluginLoader
+    - WeexSDK
+
+EXTERNAL SOURCES:
+  ErosPluginGS:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ErosPluginGS: 447a22f4d0f5082728d66a09b1162c8ac10bd1d2
+  WeexPluginLoader: 85c1304f8ba29864e58531614a0acfeceef1b85c
+  WeexSDK: ced3f2ef2f0cb48d1d76fd2f03c645572c632d21
+
+PODFILE CHECKSUM: f015775ed53efe49047c4abf0839bbf98b012bd1
+
+COCOAPODS: 1.6.0.beta.2
