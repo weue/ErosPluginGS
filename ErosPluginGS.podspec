@@ -32,6 +32,7 @@ WeexEros iOS ErosPluginGS
 
   s.source_files = 'ErosPluginGS/Classes/**/*.{h,m}'
   s.vendored_libraries  = 'ErosPluginGS/Classes/**/*.{a}'
+  s.ios.public_header_files   = 'ErosPluginGS/Classes/**/*.{h}'
   
   # s.resource_bundles = {
   #   'ErosPluginGS' => ['ErosPluginGS/Assets/*.png']
