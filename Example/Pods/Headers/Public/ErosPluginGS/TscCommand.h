@@ -1,1 +1,1 @@
-../../../../../ErosPluginGS/Classes/GSDK/include/GSDK/TscCommand.h
+../../../../../ErosPluginGS/Classes/include/GSDK/TscCommand.h

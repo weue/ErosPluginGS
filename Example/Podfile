@@ -5,14 +5,5 @@ platform :ios, '8.0'
 target 'ErosPluginGS_Example' do
   pod 'ErosPluginGS', :path => '../'
 
-  target 'ErosPluginGS_Tests' do
-    inherit! :search_paths
-
-    
-  end
-end
-
-
-pre_install do |installer| Pod::Installer::Xcode::TargetValidator.send(:define_method,
-:verify_no_static_framework_transitive_dependencies) {}
+  
 end

@@ -1,1 +1,1 @@
-../../../../../ErosPluginGS/Classes/GSDK/ConnecterManager.h
+../../../../../ErosPluginGS/Classes/ConnecterManager.h

@@ -1,1 +1,1 @@
-../../../../../ErosPluginGS/Classes/GSDK/include/GSDK/EscCommand.h
+../../../../../ErosPluginGS/Classes/include/GSDK/EscCommand.h

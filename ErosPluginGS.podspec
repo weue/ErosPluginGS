@@ -31,14 +31,12 @@ WeexEros iOS ErosPluginGS
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'ErosPluginGS/Classes/**/*.{h,m}'
-  s.vendored_libraries  = 'ErosPluginGS/Classes/**/*.{a}'
-  s.ios.public_header_files   = 'ErosPluginGS/Classes/**/*.{h}'
-  
+  #s.ios.vendored_libraries = 'ErosPluginGS/Classes/GSDK.a'
   # s.resource_bundles = {
   #   'ErosPluginGS' => ['ErosPluginGS/Assets/*.png']
   # }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
+  s.public_header_files = 'ErosPluginGS/Classes/**/*.{h}'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
   s.dependency 'WeexPluginLoader'

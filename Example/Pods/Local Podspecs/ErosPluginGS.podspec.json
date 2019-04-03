@@ -19,7 +19,7 @@
     "ios": "8.0"
   },
   "source_files": "ErosPluginGS/Classes/**/*.{h,m}",
-  "vendored_libraries": "ErosPluginGS/Classes/**/*.{a}",
+  "public_header_files": "ErosPluginGS/Classes/**/*.{h}",
   "dependencies": {
     "WeexPluginLoader": [
 
