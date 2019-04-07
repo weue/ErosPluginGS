@@ -92,10 +92,57 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
     self.isReceive = NO;
     Manager.connecter.readData = ^(NSData * _Nullable data) {
         self.isReceive = YES;
-        callback(data);
+        if (data.length > 0) {
+            NSString * dataStr  = [self convertDataToHexStr:data];
+            NSLog(@"dataStr -> %@",dataStr);
+            
+            NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+            if ([@"00" isEqualToString:dataStr]) {
+                [result setObject:@"0" forKey:@"status"];
+                [result setObject:@"正常" forKey:@"message"];
+            }else if ([@"00" isEqualToString:dataStr]) {
+                [result setObject:@"4" forKey:@"status"];
+                [result setObject:@"打印机缺纸" forKey:@"message"];
+            }else if ([@"00" isEqualToString:dataStr]) {
+                [result setObject:@"1" forKey:@"status"];
+                [result setObject:@"打印机开盖" forKey:@"message"];
+            }else if ([@"00" isEqualToString:dataStr]) {
+                [result setObject:@"80" forKey:@"status"];
+                [result setObject:@"其它错误" forKey:@"message"];
+            }else if ([@"00" isEqualToString:dataStr]) {
+                [result setObject:@"20" forKey:@"status"];
+                [result setObject:@"打印机正在打印" forKey:@"message"];
+            }else if ([@"00" isEqualToString:dataStr]) {
+                [result setObject:@"98" forKey:@"status"];
+                [result setObject:@"打印机异常" forKey:@"message"];
+            }
+            callback(result);
+        }
+        
         NSLog(@"data -> %@",data);
     };
     [Manager write:data];
+}
+
+- (NSString *)convertDataToHexStr:(NSData *)data {
+    if (!data || [data length] == 0) {
+        return @"";
+    }
+    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:[data length]];
+    
+    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
+        unsigned char *dataBytes = (unsigned char*)bytes;
+        for (NSInteger i = 0; i < byteRange.length; i++) {
+            NSString *hexStr = [NSString stringWithFormat:@"%x", (dataBytes[i]) & 0xff];
+            if ([hexStr length] == 2) {
+                [string appendString:hexStr];
+            } else {
+                [string appendFormat:@"0%@", hexStr];
+            }
+        }
+    }];
+    
+    return string;
 }
 
 /**
@@ -408,6 +455,7 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
     self.support  = @"true";
     switch (central.state) {
             case CBCentralManagerStatePoweredOff:{
+                self.enable = @"false";
             }
             break;
             case CBCentralManagerStatePoweredOn:{
@@ -419,7 +467,7 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
             case CBCentralManagerStateUnauthorized:
             break;
             case CBCentralManagerStateUnknown:{
-                self.enable = @"true";
+                self.enable = @"false";
             }
             break;
             case CBCentralManagerStateUnsupported:{
