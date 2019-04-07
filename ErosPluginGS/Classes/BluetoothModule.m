@@ -36,6 +36,7 @@ WX_PlUGIN_EXPORT_MODULE(BluetoothModule, BluetoothModule)
 WX_EXPORT_METHOD(@selector(isSupport:))
 WX_EXPORT_METHOD(@selector(isEnabled:))
 WX_EXPORT_METHOD(@selector(searchDevices:))
+WX_EXPORT_METHOD(@selector(queryTsc:))
 WX_EXPORT_METHOD(@selector(disconnectPrinter))
 WX_EXPORT_METHOD(@selector(stopSearchDevices))
 WX_EXPORT_METHOD(@selector(bondDevice:callback:))
@@ -80,12 +81,23 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
 }
 
 /**
+ * 查询设备是否支持TSC以及当前状态
+ */
+-(void)queryTsc:(WXModuleCallback)callback{
+    TscCommand *tscCommand = [[TscCommand alloc] init];
+    NSString *data = @"!?";
+    [tscCommand addStrToCommand: data];
+    NSData *r = [tscCommand getCommand];
+    callback(r);
+}
+
+/**
  *  搜索蓝牙打印机
  *
  * @param callback 回调
  */
 - (void)searchDevices:(WXModuleKeepAliveCallback)callback {
-    
+    [Manager stopScan];
     if (Manager.bleConnecter == nil) {
         [Manager didUpdateState:^(NSInteger state) {
             switch (state) {
@@ -332,7 +344,12 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
             [command addBitmapwithX:[[dic objectForKey:@"x"] intValue]  withY:[[dic objectForKey:@"y"] intValue]  withMode:[[dic objectForKey:@"mode"] intValue]  withWidth:[[dic objectForKey:@"width"] intValue] withImage:image];
         }
     }
-    [command addPrint:1 :1];
+    if ([info objectForKey:@"count"]) {
+        [command addPrint:[[info objectForKey:@"count"] intValue] :1];
+    }else {
+        [command addPrint:1 :1];
+    }
+    
     return [command getCommand];
     
 }
@@ -343,7 +360,7 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
  */
 - (void) startScane:(WXModuleKeepAliveCallback)successCallback {
     [self.blueDevices removeAllObjects];
-     [self.dicts removeAllObjects];
+    [self.dicts removeAllObjects];
     [Manager scanForPeripheralsWithServices:nil options:nil discover:^(CBPeripheral * _Nullable peripheral, NSDictionary<NSString *,id> * _Nullable advertisementData, NSNumber * _Nullable RSSI) {
         if (peripheral.name != nil) {
             NSLog(@"name -> %@",peripheral.name);
