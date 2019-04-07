@@ -37,7 +37,7 @@ WX_PlUGIN_EXPORT_MODULE(BluetoothModule, BluetoothModule)
 // 将方法暴露出去
 WX_EXPORT_METHOD(@selector(isSupport:))
 WX_EXPORT_METHOD(@selector(isEnabled:))
-WX_EXPORT_METHOD(@selector(searchDevices:))
+WX_EXPORT_METHOD(@selector(searchDevices:endCallBack:))
 WX_EXPORT_METHOD(@selector(queryTsc:))
 WX_EXPORT_METHOD(@selector(disconnectPrinter))
 WX_EXPORT_METHOD(@selector(stopSearchDevices))
@@ -103,7 +103,7 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
  *
  * @param callback 回调
  */
-- (void)searchDevices:(WXModuleKeepAliveCallback)callback {
+- (void)searchDevices:(WXModuleKeepAliveCallback)callback endCallBack:(WXModuleKeepAliveCallback)endCallBack {
     [Manager stopScan];
     if (Manager.bleConnecter == nil) {
         [Manager didUpdateState:^(NSInteger state) {
@@ -129,6 +129,13 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
     } else {
         [self startScane:callback];
     }
+    
+    //10秒之后结束搜索
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [Manager stopScan];
+        endCallBack(@"1", true);
+    });
+    
 }
 
 /**

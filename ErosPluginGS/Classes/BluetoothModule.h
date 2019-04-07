@@ -27,7 +27,7 @@
  *
  * @param callback 回调
  */
-- (void)searchDevices:(WXModuleKeepAliveCallback)callback;
+- (void)searchDevices:(WXModuleKeepAliveCallback)callback endCallBack:(WXModuleKeepAliveCallback)endCallBack ;
 
 /**
  * 停止扫描
