@@ -28,6 +28,8 @@ WX_PlUGIN_EXPORT_MODULE(BluetoothModule, BluetoothModule)
 @property(nonatomic, strong) NSString *support;
 @property(nonatomic, strong) NSString *enable;
 
+@property(nonatomic, assign) BOOL isReceive;
+
 @end
 
 @implementation BluetoothModule
@@ -84,11 +86,16 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
  * 查询设备是否支持TSC以及当前状态
  */
 -(void)queryTsc:(WXModuleCallback)callback{
-    TscCommand *tscCommand = [[TscCommand alloc] init];
-    NSString *data = @"!?";
-    [tscCommand addStrToCommand: data];
-    NSData *r = [tscCommand getCommand];
-    callback(r);
+    //发送标签模式查询
+    unsigned char tscCommand[] = {0x1B, 0x21, 0x3F};
+    NSData *data = [NSData dataWithBytes:tscCommand length:sizeof(tscCommand)];
+    self.isReceive = NO;
+    Manager.connecter.readData = ^(NSData * _Nullable data) {
+        self.isReceive = YES;
+        callback(data);
+        NSLog(@"data -> %@",data);
+    };
+    [Manager write:data];
 }
 
 /**
