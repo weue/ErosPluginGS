@@ -90,38 +90,39 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
     unsigned char tscCommand[] = {0x1B, 0x21, 0x3F};
     NSData *data = [NSData dataWithBytes:tscCommand length:sizeof(tscCommand)];
     self.isReceive = NO;
+    __block NSString *dataStr = @"99";
     Manager.connecter.readData = ^(NSData * _Nullable data) {
         self.isReceive = YES;
         if (data.length > 0) {
-            NSString * dataStr  = [self convertDataToHexStr:data];
+            dataStr  = [self convertDataToHexStr:data];
             NSLog(@"dataStr -> %@",dataStr);
-            
-            NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-            if ([@"00" isEqualToString:dataStr]) {
-                [result setObject:@"0" forKey:@"status"];
-                [result setObject:@"正常" forKey:@"message"];
-            }else if ([@"00" isEqualToString:dataStr]) {
-                [result setObject:@"4" forKey:@"status"];
-                [result setObject:@"打印机缺纸" forKey:@"message"];
-            }else if ([@"00" isEqualToString:dataStr]) {
-                [result setObject:@"1" forKey:@"status"];
-                [result setObject:@"打印机开盖" forKey:@"message"];
-            }else if ([@"00" isEqualToString:dataStr]) {
-                [result setObject:@"80" forKey:@"status"];
-                [result setObject:@"其它错误" forKey:@"message"];
-            }else if ([@"00" isEqualToString:dataStr]) {
-                [result setObject:@"20" forKey:@"status"];
-                [result setObject:@"打印机正在打印" forKey:@"message"];
-            }else if ([@"00" isEqualToString:dataStr]) {
-                [result setObject:@"98" forKey:@"status"];
-                [result setObject:@"打印机异常" forKey:@"message"];
-            }
-            callback(result);
+            /**
+             返回值(16 进制) 打印机状态
+             00 正常
+             01 开盖
+             02 卡纸
+             03 卡纸、开盖
+             04 缺纸
+             05 缺纸、开盖
+             08 无碳带
+             09 无碳带、开盖
+             0A 无碳带、卡纸
+             0B 无碳带、卡纸、开盖
+             0C 无碳带、缺纸
+             0D 无碳带、缺纸、开盖
+             10 暂停打印 20 正在打印 80 其他错误
+             */
+
+            callback(dataStr);
         }
         
         NSLog(@"data -> %@",data);
     };
     [Manager write:data];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        callback(dataStr);
+    });
+
 }
 
 - (NSString *)convertDataToHexStr:(NSData *)data {
