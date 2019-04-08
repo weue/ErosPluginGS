@@ -217,13 +217,21 @@ WX_EXPORT_METHOD(@selector(printLabel:callback:))
     }
     if (peripheral) {
         [Manager connectPeripheral:peripheral options:nil timeout:2 connectBlack:^(ConnectState state) {
+            /**
+             NOT_FOUND_DEVICE,//未找到设备
+             CONNECT_STATE_DISCONNECT,//断开连接
+             CONNECT_STATE_CONNECTING,//连接中
+             CONNECT_STATE_CONNECTED,//连接上
+             CONNECT_STATE_TIMEOUT,//连接超时
+             CONNECT_STATE_FAILT//连接失败
+             */
             if (state == CONNECT_STATE_CONNECTED) {
                 if (callback) {
-                    callback(@"1");
+                    callback(@"true");
                 }
-            }else {
+            }else if(state == CONNECT_STATE_TIMEOUT || state == CONNECT_STATE_FAILT){
                 if (callback) {
-                    callback(@"0");
+                    callback(@"false");
                 }
             }
         }];
